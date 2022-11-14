@@ -1,0 +1,32 @@
+GET http://localhost:8080
+
+### Mallorca test search
+POST http://localhost:8080/search
+content-type: application/json
+
+{
+    "destinationAirport": "PMI",
+    "homeAirport": "HAM",
+    "departuredate": "2022-08-23T05:55:00+02:00",
+    "returndate": "2022-08-30T07:50:00+02:00",
+    "countadults": "2",
+    "countchildren": "0"
+}
+
+### Login name
+POST http://localhost:8080/iam/pilot/auth/login
+content-type: application/json
+
+{
+    "emailOrUsername": "GeneralMine",
+    "password": "1234567890"
+}
+
+### Login email
+POST http://localhost:8080/iam/pilot/auth/login
+content-type: application/json
+
+{
+    "emailOrUsername": "marvin@raiser.dev",
+    "password": "1234567890"
+}

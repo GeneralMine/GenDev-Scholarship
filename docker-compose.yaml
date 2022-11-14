@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+    gendev-frontend:
+        container_name: gendev-frontend
+        restart: always
+        image: 127.0.0.1:5000/gendev-frontend
+        build: ./frontend
+        environment:
+            - "PORT=${FRONTEND_PORT}"
+        ports:
+            - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    gendev-backend:
+        container_name: gendev-backend
+        restart: always
+        image: 127.0.0.1:5000/gendev-backend
+        build: ./backend
+        depends_on:
+            - dbms
+        environment:
+            - "PORT=${BACKEND_PORT}"
+            - "DB_URL=${DBMS_PROVIDER}://${DBMS_USER}:${DBMS_PASSWORD}@${DBMS_HOST}:${DBMS_PORT}/${BACKEND_DATABASE}"
+        volumes:
+            - ./backend/migrations:/node/prisma/migrations
+        ports:
+            - "${BACKEND_PORT}:${BACKEND_PORT}"
+    dbms:
+        container_name: dbms
+        restart: always
+        image: postgres:14.4
+        environment:
+            - "POSTGRES_USER=${DBMS_USER}"
+            - "POSTGRES_PASSWORD=${DBMS_PASSWORD}"
+        volumes:
+            - ./data:/var/lib/postgresql/data
+        ports: 
+            - "${DBMS_PORT}:5432"
