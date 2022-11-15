@@ -25,7 +25,7 @@ async function main() {
 	console.log("Seeded Hotel Count: ", await prisma.hotel.count());
 	console.log("Finished Seeding Hotels!");
 	console.log("---");
-	console.log("Current Offer Count: ", await prisma.offer.count());
+	//console.log("Current Offer Count: ", await prisma.offer.count());
 	console.log("Seeding Offers...");
 
 	const offerParser = fs.createReadStream("seeding/offers.csv").pipe(parse({ columns: true }));

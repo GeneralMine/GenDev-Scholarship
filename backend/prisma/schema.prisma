@@ -2,76 +2,77 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model Hotel {
-  id             Int     @id
-  name           String?
-  latitude       String?
-  longitude      String?
-  category_stars Int?
-  offers         Offer[]
+    id             Int     @id
+    name           String?
+    latitude       String?
+    longitude      String?
+    category_stars Int?
+    offers         Offer[]
 }
 
 model Offer {
-  hotelid                  Int
-  departuredate            DateTime
-  returndate               DateTime
-  countadults              Int
-  countchildren            Int
-  price                    Int
-  inbounddepartureairport  String
-  inboundarrivalairport    String
-  inboundairline           String
-  inboundarrivaldatetime   DateTime
-  outbounddepartureairport String
-  outboundarrivalairport   String
-  outboundairline          String
-  outboundarrivaldatetime  DateTime
-  mealtype                 OfferMealType
-  oceanview                Boolean
-  roomtype                 OfferRoomType
-  hotel                    Hotel         @relation(fields: [hotelid], references: [id])
+    hotelid                  Int
+    departuredate            DateTime
+    returndate               DateTime
+    countadults              Int
+    countchildren            Int
+    price                    Int
+    inbounddepartureairport  String
+    inboundarrivalairport    String
+    inboundairline           String
+    inboundarrivaldatetime   DateTime
+    outbounddepartureairport String
+    outboundarrivalairport   String
+    outboundairline          String
+    outboundarrivaldatetime  DateTime
+    mealtype                 OfferMealType
+    oceanview                Boolean
+    roomtype                 OfferRoomType
+    hotel                    Hotel         @relation(fields: [hotelid], references: [id])
 
-  @@id([hotelid, departuredate, returndate, countadults, countchildren, price, inbounddepartureairport, inboundarrivalairport, inboundairline, inboundarrivaldatetime, outbounddepartureairport, outboundarrivalairport, outboundairline, outboundarrivaldatetime, mealtype, oceanview, roomtype])
+    @@id([hotelid, departuredate, returndate, countadults, countchildren, price, inbounddepartureairport, inboundarrivalairport, inboundairline, inboundarrivaldatetime, outbounddepartureairport, outboundarrivalairport, outboundairline, outboundarrivaldatetime, mealtype, oceanview, roomtype])
 }
 
 enum OfferMealType {
-  none
-  allinclusive
-  breakfast
-  halfboard
-  fullboard
-  halfboardplus
-  allinclusiveplus
-  selfcatering
-  fullboardplus
-  program
+    none
+    allinclusive
+    breakfast
+    halfboard
+    fullboard
+    halfboardplus
+    allinclusiveplus
+    selfcatering
+    fullboardplus
+    program
 }
 
 enum OfferRoomType {
-  program
-  suite
-  juniorsuite
-  apartment
-  double
-  studio
-  family
-  triple
-  single
-  economy
-  bungalow
-  villa
-  superior
-  multishare
-  fourbedroom
-  holidayhouse
-  duplex
-  deluxe
+    program
+    suite
+    juniorsuite
+    apartment
+    double
+    studio
+    family
+    triple
+    single
+    economy
+    bungalow
+    villa
+    superior
+    multishare
+    fourbedroom
+    holidayhouse
+    duplex
+    deluxe
+    unknown
 }
