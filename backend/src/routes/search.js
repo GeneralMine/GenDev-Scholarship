@@ -2,6 +2,7 @@
 const prisma = require("../lib/db");
 const logger = require("../lib/logger");
 const { dateIsValid } = require("../lib/util");
+const { parseStringToCharcode, parseCharcodeToString } = require("../lib/dbConverter");
 
 /**
  * @param {import("express").Request} req
@@ -9,17 +10,19 @@ const { dateIsValid } = require("../lib/util");
  */
 module.exports = async (req, res) => {
 	// get data from request
-	let { destinationAirport, homeAirport, departuredate, returndate, countadults, countchildren, mealtypes, roomtypes, oceanview, minPrice, maxPrice } = req.body;
+	let { destinationAirport, homeAirport, departuredate, returndate, countadults: countAdults, countchildren: countChildren, mealtypes, roomtypes, oceanview, minPrice, maxPrice } = req.body;
 
 	// check if required data is present
-	if (!destinationAirport || !homeAirport || !departuredate || !returndate || !countadults || !countchildren) {
+	if (!destinationAirport || !homeAirport || !departuredate || !returndate || !countAdults || !countChildren) {
 		logger.error("Search", "Request", "Missing required data in request!");
 		return res.status(400).send("Missing required data in request!");
 	}
 
 	// parse data
-	countadults = parseInt(countadults);
-	countchildren = parseInt(countchildren);
+	destinationAirport = parseStringToCharcode(destinationAirport);
+	homeAirport = parseStringToCharcode(homeAirport);
+	countAdults = parseInt(countAdults);
+	countChildren = parseInt(countChildren);
 	departuredate = new Date(departuredate);
 	returndate = new Date(returndate);
 	if (minPrice) minPrice = parseInt(minPrice);
@@ -29,10 +32,8 @@ module.exports = async (req, res) => {
 
 	// check if data is valid
 	if (
-		countadults < 1 ||
-		countchildren < 0 ||
-		destinationAirport.length !== 3 ||
-		homeAirport.length !== 3 ||
+		countAdults < 1 ||
+		countChildren < 0 ||
 		!dateIsValid(departuredate) ||
 		!dateIsValid(returndate) ||
 		(minPrice && minPrice < 0) ||
@@ -43,26 +44,31 @@ module.exports = async (req, res) => {
 		return res.status(400).send("Invalid data in request!");
 	}
 
+	console.log("Searching for flights...", destinationAirport, homeAirport, departuredate, returndate, countAdults, countChildren, mealtypes, roomtypes, oceanview, minPrice, maxPrice);
 	// get all offers by filter
 	const offers = await prisma.offer.findMany({
 		where: {
 			AND: [
 				{
-					departuredate,
+					departureDateDay: departuredate.getDay(),
+					departureDateMonth: departuredate.getMonth(),
+					departureDateYear: departuredate.getFullYear(),
 				},
 				{
-					returndate,
+					returnDateDay: returndate.getDay(),
+					returnDateMonth: returndate.getMonth(),
+					returnDateYear: returndate.getFullYear(),
 				},
 				{
-					countadults,
+					countAdults,
 				},
 				{
-					countchildren,
+					countChildren,
 				},
 				{
 					OR: {
-						inboundarrivalairport: destinationAirport,
-						outboundarrivalairport: destinationAirport,
+						outboundArrivalAirport: destinationAirport,
+						outboundArrivalAirport: destinationAirport,
 					},
 				},
 			],
@@ -70,6 +76,7 @@ module.exports = async (req, res) => {
 		include: {
 			hotel: true,
 		},
+		take: 25,
 	});
 
 	console.log(offers);

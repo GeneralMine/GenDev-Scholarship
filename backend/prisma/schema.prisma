@@ -20,26 +20,32 @@ model Hotel {
 }
 
 model Offer {
-    hotelid                  Int
-    departuredate            DateTime
-    returndate               DateTime
-    countadults              Int
-    countchildren            Int
+    hotelId                  Int
+    departureDateDay         Int
+    departureDateMonth       Int
+    departureDateYear        Int
+    departureDate            DateTime
+    returnDateDay            Int
+    returnDateMonth          Int
+    returnDateYear           Int
+    returnDate               DateTime
+    countAdults              Int
+    countChildren            Int
     price                    Int
-    inbounddepartureairport  String
-    inboundarrivalairport    String
-    inboundairline           String
-    inboundarrivaldatetime   DateTime
-    outbounddepartureairport String
-    outboundarrivalairport   String
-    outboundairline          String
-    outboundarrivaldatetime  DateTime
+    inboundDepartureAirport  Int
+    inboundArrivalAirport    Int
+    inboundArrivalDatetime   DateTime
+    inboundAirline           Int
+    outboundDepartureAirport Int
+    outboundArrivalAirport   Int
+    outboundArrivalDatetime  DateTime
+    outboundAirline          Int
     mealtype                 OfferMealType
     oceanview                Boolean
     roomtype                 OfferRoomType
-    hotel                    Hotel         @relation(fields: [hotelid], references: [id])
+    hotel                    Hotel         @relation(fields: [hotelId], references: [id])
 
-    @@id([hotelid, departuredate, returndate, countadults, countchildren, price, inbounddepartureairport, inboundarrivalairport, inboundairline, inboundarrivaldatetime, outbounddepartureairport, outboundarrivalairport, outboundairline, outboundarrivaldatetime, mealtype, oceanview, roomtype])
+    @@id([hotelId, departureDateDay, departureDateMonth, departureDateYear, departureDate, returnDateDay, returnDateMonth, returnDateYear, returnDate, countAdults, countChildren, price, inboundDepartureAirport, inboundArrivalAirport, inboundArrivalDatetime, inboundAirline, outboundDepartureAirport, outboundArrivalAirport, outboundArrivalDatetime, outboundAirline, mealtype, oceanview, roomtype])
 }
 
 enum OfferMealType {

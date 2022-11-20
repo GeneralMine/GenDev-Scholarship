@@ -10,7 +10,7 @@ module.exports = async function () {
 			await prisma["hotel"].findMany();
 			logger.log("Database", "Info", "Database Stats:");
 			await countEntitiy("hotel");
-			await countEntitiy("offer");
+			//await countEntitiy("offer");
 			connected = true;
 		} catch (error) {
 			logger.error("Database", "Connection", "Database connection failed. \n\t\t\t\tDatabase may not exist or isnt synced! \n\t\t\t\tRetrying in 5 seconds...");
