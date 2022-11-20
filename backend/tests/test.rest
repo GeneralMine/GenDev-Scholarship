@@ -7,10 +7,10 @@ content-type: application/json
 {
     "destinationAirport": "PMI",
     "homeAirport": "HAM",
-    "departuredate": "2022-08-23T05:55:00+02:00",
-    "returndate": "2022-08-30T07:50:00+02:00",
-    "countadults": "2",
-    "countchildren": "0"
+    "departureDate": "2022-08-23T05:55:00+02:00",
+    "returnDate": "2022-08-30T07:50:00+02:00",
+    "adults": "2",
+    "children": "0"
 }
 
 ### Login name

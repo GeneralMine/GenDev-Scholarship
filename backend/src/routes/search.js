@@ -10,10 +10,10 @@ const { parseStringToCharcode, parseCharcodeToString } = require("../lib/dbConve
  */
 module.exports = async (req, res) => {
 	// get data from request
-	let { destinationAirport, homeAirport, departuredate, returndate, countadults: countAdults, countchildren: countChildren, mealtypes, roomtypes, oceanview, minPrice, maxPrice } = req.body;
+	let { destinationAirport, homeAirport, departureDate, returnDate, adults, children, mealtypes, roomtypes, oceanview, minPrice, maxPrice } = req.body;
 
 	// check if required data is present
-	if (!destinationAirport || !homeAirport || !departuredate || !returndate || !countAdults || !countChildren) {
+	if (!destinationAirport || !homeAirport || !departureDate || !returnDate || adults === null || children === null) {
 		logger.error("Search", "Request", "Missing required data in request!");
 		return res.status(400).send("Missing required data in request!");
 	}
@@ -21,10 +21,10 @@ module.exports = async (req, res) => {
 	// parse data
 	destinationAirport = parseStringToCharcode(destinationAirport);
 	homeAirport = parseStringToCharcode(homeAirport);
-	countAdults = parseInt(countAdults);
-	countChildren = parseInt(countChildren);
-	departuredate = new Date(departuredate);
-	returndate = new Date(returndate);
+	adults = parseInt(adults);
+	children = parseInt(children);
+	departureDate = new Date(departureDate);
+	returnDate = new Date(returnDate);
 	if (minPrice) minPrice = parseInt(minPrice);
 	if (maxPrice) maxPrice = parseInt(maxPrice);
 	if (oceanview === "true") oceanview = true;
@@ -32,10 +32,10 @@ module.exports = async (req, res) => {
 
 	// check if data is valid
 	if (
-		countAdults < 1 ||
-		countChildren < 0 ||
-		!dateIsValid(departuredate) ||
-		!dateIsValid(returndate) ||
+		adults < 1 ||
+		children < 0 ||
+		!dateIsValid(departureDate) ||
+		!dateIsValid(returnDate) ||
 		(minPrice && minPrice < 0) ||
 		(maxPrice && maxPrice < 0) ||
 		(minPrice && maxPrice && minPrice > maxPrice)
@@ -44,26 +44,26 @@ module.exports = async (req, res) => {
 		return res.status(400).send("Invalid data in request!");
 	}
 
-	console.log("Searching for flights...", destinationAirport, homeAirport, departuredate, returndate, countAdults, countChildren, mealtypes, roomtypes, oceanview, minPrice, maxPrice);
+	console.log("Searching for flights...", destinationAirport, homeAirport, departureDate, returnDate, adults, children, mealtypes, roomtypes, oceanview, minPrice, maxPrice);
 	// get all offers by filter
 	const offers = await prisma.offer.findMany({
 		where: {
 			AND: [
 				{
-					departureDateDay: departuredate.getDay(),
-					departureDateMonth: departuredate.getMonth(),
-					departureDateYear: departuredate.getFullYear(),
+					departureDateDay: departureDate.getDay(),
+					departureDateMonth: departureDate.getMonth(),
+					departureDateYear: departureDate.getFullYear(),
 				},
 				{
-					returnDateDay: returndate.getDay(),
-					returnDateMonth: returndate.getMonth(),
-					returnDateYear: returndate.getFullYear(),
+					returnDateDay: returnDate.getDay(),
+					returnDateMonth: returnDate.getMonth(),
+					returnDateYear: returnDate.getFullYear(),
 				},
 				{
-					countAdults,
+					adults,
 				},
 				{
-					countChildren,
+					children,
 				},
 				{
 					OR: {
@@ -77,6 +77,22 @@ module.exports = async (req, res) => {
 			hotel: true,
 		},
 		take: 25,
+	});
+
+	// parse data from db
+	offers.forEach((offer) => {
+		offer.inboundDepartureAirport = parseCharcodeToString(offer.inboundDepartureAirport);
+		offer.inboundArrivalAirport = parseCharcodeToString(offer.inboundArrivalAirport);
+		offer.inboundAirline = parseCharcodeToString(offer.inboundAirline);
+		offer.outboundDepartureAirport = parseCharcodeToString(offer.outboundDepartureAirport);
+		offer.outboundArrivalAirport = parseCharcodeToString(offer.outboundArrivalAirport);
+		offer.outboundAirline = parseCharcodeToString(offer.outboundAirline);
+		delete offer.departureDateDay;
+		delete offer.departureDateMonth;
+		delete offer.departureDateYear;
+		delete offer.returnDateDay;
+		delete offer.returnDateMonth;
+		delete offer.returnDateYear;
 	});
 
 	console.log(offers);

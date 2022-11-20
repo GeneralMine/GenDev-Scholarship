@@ -16,6 +16,7 @@ model Hotel {
     latitude       String?
     longitude      String?
     category_stars Int?
+    city           String?
     offers         Offer[]
 }
 
@@ -29,8 +30,8 @@ model Offer {
     returnDateMonth          Int
     returnDateYear           Int
     returnDate               DateTime
-    countAdults              Int
-    countChildren            Int
+    adults                   Int
+    children                 Int
     price                    Int
     inboundDepartureAirport  Int
     inboundArrivalAirport    Int
@@ -45,7 +46,7 @@ model Offer {
     roomtype                 OfferRoomType
     hotel                    Hotel         @relation(fields: [hotelId], references: [id])
 
-    @@id([hotelId, departureDateDay, departureDateMonth, departureDateYear, departureDate, returnDateDay, returnDateMonth, returnDateYear, returnDate, countAdults, countChildren, price, inboundDepartureAirport, inboundArrivalAirport, inboundArrivalDatetime, inboundAirline, outboundDepartureAirport, outboundArrivalAirport, outboundArrivalDatetime, outboundAirline, mealtype, oceanview, roomtype])
+    @@id([hotelId, departureDateDay, departureDateMonth, departureDateYear, departureDate, returnDateDay, returnDateMonth, returnDateYear, returnDate, adults, children, price, inboundDepartureAirport, inboundArrivalAirport, inboundArrivalDatetime, inboundAirline, outboundDepartureAirport, outboundArrivalAirport, outboundArrivalDatetime, outboundAirline, mealtype, oceanview, roomtype])
 }
 
 enum OfferMealType {
