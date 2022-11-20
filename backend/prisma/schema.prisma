@@ -11,13 +11,19 @@ datasource db {
 }
 
 model Hotel {
-    id             Int     @id
-    name           String?
-    latitude       String?
-    longitude      String?
-    category_stars Int?
-    city           String?
-    offers         Offer[]
+    hotelId          Int     @id
+    name             String
+    latitude         String?
+    longitude        String?
+    category_stars   Int?
+    country          String?
+    city             String?
+    state            String?
+    zipcode          Int?
+    streetName       String?
+    streetNumber     String?
+    formattedAddress String?
+    offers           Offer[]
 }
 
 model Offer {
@@ -44,7 +50,7 @@ model Offer {
     mealtype                 OfferMealType
     oceanview                Boolean
     roomtype                 OfferRoomType
-    hotel                    Hotel         @relation(fields: [hotelId], references: [id])
+    hotel                    Hotel         @relation(fields: [hotelId], references: [hotelId])
 
     @@id([hotelId, departureDateDay, departureDateMonth, departureDateYear, departureDate, returnDateDay, returnDateMonth, returnDateYear, returnDate, adults, children, price, inboundDepartureAirport, inboundArrivalAirport, inboundArrivalDatetime, inboundAirline, outboundDepartureAirport, outboundArrivalAirport, outboundArrivalDatetime, outboundAirline, mealtype, oceanview, roomtype])
 }

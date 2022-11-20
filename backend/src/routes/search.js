@@ -46,56 +46,71 @@ module.exports = async (req, res) => {
 
 	console.log("Searching for flights...", destinationAirport, homeAirport, departureDate, returnDate, adults, children, mealtypes, roomtypes, oceanview, minPrice, maxPrice);
 	// get all offers by filter
-	const offers = await prisma.offer.findMany({
-		where: {
-			AND: [
-				{
-					departureDateDay: departureDate.getDay(),
-					departureDateMonth: departureDate.getMonth(),
-					departureDateYear: departureDate.getFullYear(),
-				},
-				{
-					returnDateDay: returnDate.getDay(),
-					returnDateMonth: returnDate.getMonth(),
-					returnDateYear: returnDate.getFullYear(),
-				},
-				{
-					adults,
-				},
-				{
-					children,
-				},
-				{
-					OR: {
-						outboundArrivalAirport: destinationAirport,
-						outboundArrivalAirport: destinationAirport,
+	let hotels = await (
+		await prisma.offer.groupBy({
+			by: ["hotelId"],
+			where: {
+				AND: [
+					{
+						departureDateDay: departureDate.getDay(),
+						departureDateMonth: departureDate.getMonth(),
+						departureDateYear: departureDate.getFullYear(),
 					},
-				},
-			],
-		},
-		include: {
-			hotel: true,
-		},
-		take: 25,
+					{
+						returnDateDay: returnDate.getDay(),
+						returnDateMonth: returnDate.getMonth(),
+						returnDateYear: returnDate.getFullYear(),
+					},
+					{
+						adults,
+					},
+					{
+						children,
+					},
+					{
+						OR: {
+							outboundArrivalAirport: destinationAirport,
+							outboundArrivalAirport: destinationAirport,
+						},
+					},
+				],
+			},
+			_count: {
+				_all: true,
+			},
+			_min: {
+				price: true,
+			},
+		})
+	).map(async (d) => {
+		const hotel = await prisma.hotel.findFirst({
+			where: { hotelId: d.hotelId },
+			select: {
+				name: true,
+				category_stars: true,
+				city: true,
+			},
+		});
+		return { ...d, ...hotel };
 	});
 
-	// parse data from db
-	offers.forEach((offer) => {
-		offer.inboundDepartureAirport = parseCharcodeToString(offer.inboundDepartureAirport);
-		offer.inboundArrivalAirport = parseCharcodeToString(offer.inboundArrivalAirport);
-		offer.inboundAirline = parseCharcodeToString(offer.inboundAirline);
-		offer.outboundDepartureAirport = parseCharcodeToString(offer.outboundDepartureAirport);
-		offer.outboundArrivalAirport = parseCharcodeToString(offer.outboundArrivalAirport);
-		offer.outboundAirline = parseCharcodeToString(offer.outboundAirline);
-		delete offer.departureDateDay;
-		delete offer.departureDateMonth;
-		delete offer.departureDateYear;
-		delete offer.returnDateDay;
-		delete offer.returnDateMonth;
-		delete offer.returnDateYear;
+	// await all promises
+	hotels = await Promise.all(hotels);
+
+	// Format data
+	hotels = hotels.map((d) => {
+		return {
+			hotelId: d.hotelId,
+			name: d.name,
+			category_stars: d.category_stars,
+			city: d.city,
+			minPrice: d._min.price,
+			offersCount: d._count._all,
+		};
 	});
 
-	console.log(offers);
+	console.log(hotels);
+	console.log(hotels.length);
 
-	return res.status(200).json({ offers });
+	return res.status(200).json({ hotels });
 };

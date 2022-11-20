@@ -3,21 +3,38 @@ const fs = require("fs");
 const { parse } = require("csv-parse");
 const { parseStringToCharcode } = require("../src/lib/dbConverter");
 
+const hotelCSV = "../seedData/hotelsFeeded.csv";
+const offerCSV = "../seedData/offers100k.csv";
+
+function existenceCheck(str) {
+	if (str === "") {
+		return null;
+	}
+	return str;
+}
+
 async function main() {
 	console.time("seeding time");
 	console.log("Current Hotel Count: ", await prisma.hotel.count());
 	console.log("Seeding Hotels...");
 
-	const hotelParser = fs.createReadStream("../seedData/hotels.csv").pipe(parse({ columns: true }));
+	const hotelParser = fs.createReadStream(hotelCSV).pipe(parse({ columns: true }));
 	let buffer1 = [];
 
 	for await (const hotel of hotelParser) {
 		buffer1.push({
-			id: parseInt(hotel.id),
+			hotelId: parseInt(hotel.id),
 			name: hotel.name,
 			latitude: hotel.latitude,
 			longitude: hotel.longitude,
 			category_stars: parseInt(hotel.category_stars),
+			country: existenceCheck(hotel.country),
+			city: existenceCheck(hotel.city),
+			state: existenceCheck(hotel.state),
+			zipcode: existenceCheck(hotel.zipcode) ? parseInt(hotel.zipcode) : null,
+			streetName: existenceCheck(hotel.streetName),
+			streetNumber: existenceCheck(hotel.streetNumber),
+			formattedAddress: existenceCheck(hotel.formattedAddress),
 		});
 	}
 	await prisma.hotel.createMany({ data: buffer1, skipDuplicates: true });
@@ -28,7 +45,7 @@ async function main() {
 	console.log("Current Offer Count: ", await prisma.offer.count());
 	console.log("Seeding Offers...");
 
-	const offerParser = fs.createReadStream("../seedData/offers100k.csv").pipe(parse({ columns: true }));
+	const offerParser = fs.createReadStream(offerCSV).pipe(parse({ columns: true }));
 	let buffer2 = [];
 
 	for await (const offer of offerParser) {

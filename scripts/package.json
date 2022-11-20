@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "csv": "^6.2.2"
+    "csv": "^6.2.2",
+    "csv-stringify": "^6.2.1",
+    "node-geocoder": "^4.2.0"
   }
 }

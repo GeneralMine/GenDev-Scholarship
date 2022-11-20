@@ -8,8 +8,8 @@
 	import TabBar from '@smui/tab-bar';
 	import Textfield from '@smui/textfield';
 	import Card, { Content, PrimaryAction, Actions, ActionButtons, ActionIcons } from '@smui/card';
-	import Offer from './Offer.svelte';
 	import { writable } from 'svelte/store';
+	import Hotel from './Hotel.svelte';
 
 	let mealTypes = [
 		'none',
@@ -46,7 +46,7 @@
 	let adults = 1;
 	let children = 0;
 
-	const offers = writable([]);
+	const hotels = writable([]);
 
 	async function search() {
 		console.log('searching...');
@@ -66,8 +66,8 @@
 			})
 		});
 		if (response.ok) {
-			$offers = (await response.json()).offers;
-			console.log('Found', $offers);
+			$hotels = (await response.json()).hotels;
+			console.log('Found', $hotels);
 		} else {
 			console.log('Error', response);
 		}
@@ -117,12 +117,14 @@
 		</Actions>
 	</Card>
 
-	<h2>Offers</h2>
-	<div class="offersBox">
-		{#each $offers as offer}
-			<Offer {...offer} />
-		{/each}
-	</div>
+	{#if $hotels.length > 0}
+		<h2>{$hotels.length} Offers</h2>
+		<div class="offersBox">
+			{#each $hotels as hotel}
+				<Hotel {...hotel} />
+			{/each}
+		</div>
+	{/if}
 </div>
 
 <style>
