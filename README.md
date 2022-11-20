@@ -1,5 +1,6 @@
 # GenDev-Scholarship
-![image](https://user-images.githubusercontent.com/33132009/202933210-72125c37-acb7-4d9d-95f6-ca45e0c2cd78.png)
+![image](https://user-images.githubusercontent.com/33132009/202933289-612f707c-5204-439e-8523-8917d713304a.png)
+
 
 ## Setup
 1. Clone Repo
