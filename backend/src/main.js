@@ -19,7 +19,8 @@ async function startup() {
 		res.send("Hello World!");
 	});
 
-	app.post("/search", require("./routes/search"));
+	app.post("/hotels", require("./routes/hotels"));
+	app.post("/offers", require("./routes/offers"));
 
 	app.listen(PORT, () => {
 		console.log(`listening at http://localhost:${PORT}`);
