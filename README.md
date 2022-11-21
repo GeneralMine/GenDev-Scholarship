@@ -1,7 +1,7 @@
 # GenDev-Scholarship
 My solution for the Check24 GenDev-Scholarship.<br/>
 Personal Challenge: Complete it within 48h.<br/>
-Currently needed only 10h! (passive Database feeding/seeding not counted)
+Currently needed only 11h! (passive Database feeding/seeding not counted)
 
 ## The Challenge
 Build a holiday booking plattform for flights and hotels like [urlaub.check24.de](https://urlaub.check24.de).
@@ -10,6 +10,27 @@ For more details refer to [GenDev Scholarship](https://check24.de/gen-dev)
 
 ## The Solution
 ![image](https://user-images.githubusercontent.com/33132009/202933289-612f707c-5204-439e-8523-8917d713304a.png)
+
+### Current Features
+- [x] fully setup Database
+  - [x] fully seeded DBMS from csv (~72 million Mallorca offers, 2k distinct hotels)
+  - [x] optimized data schema (e.g. replaced airport strings with ints by encoding into concatination of charcodes)
+  - [x] optimized search querys
+  - [x] hotel database feed with geographic data (city, street, ...)
+- [x] Search for offers grouped by hotel
+  - [x] using start and end date of stay, numbers of adults&children traveling, starting airport, destination airport
+  - [x] semi fancy UI
+  - [ ] filter the list after stars
+  - [ ] sort the list after price range
+  - [ ] pagination
+- [ ] Show all offers of the aggregated hotel from previous search
+  - [ ] semi fancy UI
+  - [ ] filter the list after roomtypes, oceanview and mealtype
+  - [ ] sort the list after price range, roomtypes, oceanview and mealtype
+  - [ ] pagination
+
+### Challenges
+- 
 
 ## Setup
 ### Database
