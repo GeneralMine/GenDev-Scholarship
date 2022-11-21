@@ -3,6 +3,14 @@ My solution for the Check24 GenDev-Scholarship.<br/>
 Personal Challenge: Complete it within 48h.<br/>
 Currently needed only 10h! (passive Database feeding/seeding not counted)
 
+## The Challenge
+Build a holiday booking plattform for flights and hotels like [urlaub.check24.de](https://urlaub.check24.de).
+
+For more details refer to [GenDev Scholarship](https://check24.de/gen-dev)
+
+## The Solution
+![image](https://user-images.githubusercontent.com/33132009/202933289-612f707c-5204-439e-8523-8917d713304a.png)
+
 ## Setup
 ### Database
 1. Move dataset (`hotels.csv`, `offers.csv`) into `seedData` folder
